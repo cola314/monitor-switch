@@ -25,14 +25,20 @@ public class MainTray
         var showItem = context.Items.Add("show", null);
         var exitItem = context.Items.Add("exit", null);
 
-        showItem.Command = new DelegateCommand(_ =>
+        showItem.Click += (_, e) =>
         {
-            _showAction.Invoke();
-        });
-        exitItem.Command = new DelegateCommand(_ =>
+            if (e is MouseEventArgs { Button: MouseButtons.Left })
+            {
+                _showAction.Invoke();
+            }
+        };
+        exitItem.Click += (_, e) =>
         {
-            _closeAction.Invoke();
-        });
+            if (e is MouseEventArgs { Button: MouseButtons.Left })
+            {
+                _closeAction.Invoke();
+            }
+        };
 
         var ni = new NotifyIcon()
         {
