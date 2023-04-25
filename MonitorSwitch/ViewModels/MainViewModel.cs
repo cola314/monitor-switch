@@ -37,6 +37,8 @@ public class MainViewModel : BaseViewModel
         });
     }
 
+    public DelegateCommand RefreshCommand => new(_ => RefreshScreens());
+
     private void RefreshScreens()
     {
         var selectedScreen = _selectedScreen;

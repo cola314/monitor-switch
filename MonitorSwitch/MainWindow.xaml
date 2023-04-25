@@ -14,7 +14,11 @@
     <Window.DataContext>
         <Binding Source="{StaticResource MainViewModel}"/>
     </Window.DataContext>
-    <Grid>
+    <StackPanel>
+        <Button Command="{Binding RefreshCommand}"
+                HorizontalAlignment="Left"
+                Content="Refresh"
+                Padding="5"/>
         <ListView ItemsSource="{Binding Screens}"
                   SelectedItem="{Binding SelectedScreen}">
             <ListView.ItemTemplate>
@@ -28,5 +32,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </Grid>
+    </StackPanel>
 </Window>
