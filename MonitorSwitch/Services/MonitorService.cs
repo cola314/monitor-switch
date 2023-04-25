@@ -159,6 +159,7 @@ public class MonitorService
     [Flags()]
     public enum DisplayDeviceStateFlags : int
     {
+        None = 0,
         /// <summary>The device is part of the desktop.</summary>
         AttachedToDesktop = 0x1,
         MultiDriver = 0x2,

@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Forms;
+using MonitorSwitch.Repositories;
 using MonitorSwitch.Services;
 using MonitorSwitch.Utils;
 
@@ -9,11 +11,22 @@ public class MainViewModel : BaseViewModel
 {
     private readonly KeyHookService _keyHookService = new();
     private readonly MonitorService _monitorService = new();
+    private readonly DisplayRepository _displayRepository = new();
 
     public MainViewModel()
     {
+        LoadFromSavedDisplay();
         RefreshScreens();
         _keyHookService.KeyPressed += KeyHookServiceOnKeyPressed;
+    }
+
+    private void LoadFromSavedDisplay()
+    {
+        var lastSelectedDisplay = _displayRepository.GetLastSelectedDisplayName();
+        if (lastSelectedDisplay == null) return;
+
+        SelectedScreen = new ScreenViewModel(
+            new DisplayDevice(lastSelectedDisplay, null, null, null, MonitorService.DisplayDeviceStateFlags.None));
     }
 
     private void KeyHookServiceOnKeyPressed(KeyHookService.VKeys obj)
@@ -39,10 +52,17 @@ public class MainViewModel : BaseViewModel
 
     public DelegateCommand RefreshCommand => new(_ => RefreshScreens());
 
+    public DelegateCommand SelectDisplayCommand => new(o =>
+    {
+        if (o is ScreenViewModel viewModel)
+        {
+            SelectedScreen = viewModel;
+            _displayRepository.Save(viewModel.DeviceName);
+        }
+    });
+
     private void RefreshScreens()
     {
-        var selectedScreen = _selectedScreen;
-
         Screens.Clear();
 
         foreach (var screen in _monitorService.GetDisplayDevices())
@@ -50,7 +70,11 @@ public class MainViewModel : BaseViewModel
             Screens.Add(new ScreenViewModel(screen));
         }
 
-        SelectedScreen = Screens.FirstOrDefault(x => x.DeviceName == selectedScreen?.DeviceName);
+        var selectedScreen = Screens.FirstOrDefault(x => x.DeviceName == SelectedScreen?.DeviceName);
+        if (selectedScreen != null)
+        {
+            SelectedScreen = selectedScreen;
+        }
     }
 
     public ObservableCollection<ScreenViewModel> Screens { get; } = new();
