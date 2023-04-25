@@ -62,7 +62,7 @@ public class MainViewModel : BaseViewModel
     }
 }
 
- public class ScreenViewModel : BaseViewModel
+public class ScreenViewModel : BaseViewModel
 {
     private readonly DisplayDevice _screen;
 

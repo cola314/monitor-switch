@@ -25,19 +25,13 @@ public class MainTray
         var showItem = context.Items.Add("show", null);
         var exitItem = context.Items.Add("exit", null);
 
-        showItem.Click += (_, e) =>
+        showItem.Click += (_, _) =>
         {
-            if (e is MouseEventArgs { Button: MouseButtons.Left })
-            {
-                _showAction.Invoke();
-            }
+            _showAction.Invoke();
         };
-        exitItem.Click += (_, e) =>
+        exitItem.Click += (_, _) =>
         {
-            if (e is MouseEventArgs { Button: MouseButtons.Left })
-            {
-                _closeAction.Invoke();
-            }
+            _closeAction.Invoke();
         };
 
         var ni = new NotifyIcon()
