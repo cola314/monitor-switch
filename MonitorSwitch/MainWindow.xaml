@@ -7,39 +7,172 @@
         xmlns:local="clr-namespace:MonitorSwitch"
         xmlns:viewModels="clr-namespace:MonitorSwitch.ViewModels"
         mc:Ignorable="d"
-        Title="MonitorSwitch" Height="450" Width="800">
+        Title="MonitorSwitch" Height="450" Width="800"
+        Background="{DynamicResource LightBeigeBrush}">
     <Window.Resources>
         <viewModels:MainViewModel x:Key="MainViewModel"/>
+
+        <SolidColorBrush x:Key="LightBeigeBrush" Color="#EDF1D6"/>
+        <SolidColorBrush x:Key="LightGreenBrush" Color="#9DC08B"/>
+        <SolidColorBrush x:Key="DarkGreenBrush" Color="#609966"/>
+        <SolidColorBrush x:Key="DarkOliveBrush" Color="#40513B"/>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{DynamicResource DarkOliveBrush}"/>
+            <Setter Property="Foreground" Value="#fff"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="2" Direction="0" BlurRadius="2" Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Cursor="{TemplateBinding Cursor}">
+                            <ContentPresenter 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+
+                            </ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="4" Direction="0" BlurRadius="4" Opacity="0.2"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RefreshButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="Transparent">
+                            <Path x:Name="RefreshIcon" StrokeThickness="1.75" 
+                                  Stroke="{TemplateBinding Foreground}"
+                                  Data="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                                  Width="{TemplateBinding Width}"
+                                  Height="{TemplateBinding Height}"
+                                  Stretch="Fill">
+                                <Path.RenderTransform>
+                                    <RotateTransform x:Name="RotationTransform" Angle="0" CenterX="12" CenterY="12"/>
+                                </Path.RenderTransform>
+                            </Path>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="RotationTransform"
+                                                         Storyboard.TargetProperty="Angle"
+                                                         From="0" To="360" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="{DynamicResource LightGreenBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Ellipse Width="20"
+                                 Height="20"
+                                 Fill="{TemplateBinding Foreground}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter Property="Foreground" Value="LightGray"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
     <Window.DataContext>
         <Binding Source="{StaticResource MainViewModel}"/>
     </Window.DataContext>
-    <StackPanel>
-        <Button Command="{Binding RefreshCommand}"
-                HorizontalAlignment="Left"
-                Content="Refresh"
-                Padding="5"/>
-        <ListView ItemsSource="{Binding Screens}">
-            <ListView.ItemTemplate>
+    <StackPanel Margin="10">
+        <StackPanel Orientation="Horizontal">
+            <Label Foreground="{DynamicResource DarkOliveBrush}"
+                   FontSize="30"
+                   FontWeight="Bold"
+                   Content="Displays"/>
+            <Button Command="{Binding RefreshCommand}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Width="25"
+                    Height="25"
+                    Margin="0,5,0,0"
+                    Content="Refresh"
+                    Style="{StaticResource RefreshButtonStyle}"/>
+        </StackPanel>
+        <ListBox ItemsSource="{Binding Screens}"
+                  Background="{DynamicResource LightBeigeBrush}"
+                  BorderThickness="0">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                    <ContentPresenter/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type viewModels:ScreenViewModel}">
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Select"
                                 Margin="0,0,10,0"
                                 Padding="5,0"
+                                FontSize="20"
+                                HorizontalAlignment="Center"
                                 Command="{Binding DataContext.SelectDisplayCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
                                 CommandParameter="{Binding}"/>
-                        <CheckBox 
+                        <CheckBox
                             IsEnabled="False" 
                             IsChecked="{Binding IsConnected, Mode=OneWay}"
-                            Margin="0,0,5,0"/>
-                        <TextBlock Text="{Binding DisplayDeviceName}"/>
+                            Margin="0,0,5,0"
+                            HorizontalAlignment="Center"/>
+                        <TextBlock 
+                            FontSize="20"
+                            HorizontalAlignment="Center"
+                            Text="{Binding DisplayDeviceName}"/>
                     </StackPanel>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Selected Monitor: "/>
-            <TextBlock Text="{Binding SelectedScreen.DisplayDeviceName, FallbackValue=No selected display}"/>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <TextBlock 
+                Text="Selected Monitor: "
+                FontSize="25"/>
+            <TextBlock 
+                Text="{Binding SelectedScreen.DisplayDeviceName, FallbackValue=No selected display}"
+                FontSize="25"
+                FontWeight="Bold"/>
         </StackPanel>
     </StackPanel>
 </Window>
