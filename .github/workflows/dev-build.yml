@@ -24,10 +24,8 @@ jobs:
       run: dotnet restore
     - name: Build the application
       run: dotnet build --configuration Release
-    - name: Create zip archive
-      run: 7z a -tzip MonitorSwitch.zip -r .\MonitorSwitch\bin\Release\net7.0-windows
     - name: Publish artifact
       uses: actions/upload-artifact@v2
       with:
         name: MonitorSwitch
-        path: MonitorSwitch.zip
+        path: .\MonitorSwitch\bin\Release\net7.0-windows
