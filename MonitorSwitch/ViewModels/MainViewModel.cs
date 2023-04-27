@@ -11,6 +11,7 @@ public class MainViewModel : BaseViewModel
     private readonly KeyHookService _keyHookService = new();
     private readonly MonitorService _monitorService = new();
     private readonly DisplayRepository _displayRepository = new();
+    private readonly AutoStartService _autoStartService = new();
 
     public MainViewModel()
     {
@@ -89,6 +90,18 @@ public class MainViewModel : BaseViewModel
 
             foreach (var screen in Screens)
                 screen.UpdateSelectedStatus(SelectedScreen);
+        }
+    }
+
+    public bool IsStartUpProgram
+    {
+        get => _autoStartService.IsRegistered();
+        set
+        {
+            if (value)
+                _autoStartService.Register();
+            else
+                _autoStartService.UnRegister();
         }
     }
 }
