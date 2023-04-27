@@ -1,5 +1,4 @@
 ﻿using System;
-using MonitorSwitch.Utils;
 using System.Drawing;
 using System.Windows.Forms;
 

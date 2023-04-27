@@ -25,7 +25,7 @@ public class MainViewModel : BaseViewModel
         if (lastSelectedDisplay == null) return;
 
         SelectedScreen = new ScreenViewModel(
-            new DisplayDevice(lastSelectedDisplay, null, null, null, MonitorService.DisplayDeviceStateFlags.None));
+            new DisplayDevice(lastSelectedDisplay, string.Empty, string.Empty, string.Empty, MonitorService.DisplayDeviceStateFlags.None));
     }
 
     private void KeyHookServiceOnKeyPressed(KeyHookService.VKeys obj)
