@@ -13,6 +13,18 @@ public class ScreenViewModel : BaseViewModel
 
     public bool IsConnected => _screen.StateFlags.HasFlag(MonitorService.DisplayDeviceStateFlags.AttachedToDesktop);
     public string DeviceName => _screen.DeviceName;
+    
+    private bool _isSelected = false;
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetField(ref _isSelected, value);
+    }
+
+    public void UpdateSelectedStatus(ScreenViewModel? selectedScreenViewModel)
+    {
+        IsSelected = selectedScreenViewModel?.DeviceName == DeviceName;
+    }
 
     public ScreenViewModel(DisplayDevice screen)
     {

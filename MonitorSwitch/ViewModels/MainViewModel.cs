@@ -83,6 +83,12 @@ public class MainViewModel : BaseViewModel
     public ScreenViewModel? SelectedScreen
     {
         get => _selectedScreen;
-        set => SetField(ref _selectedScreen, value);
+        set
+        {
+            SetField(ref _selectedScreen, value);
+
+            foreach (var screen in Screens)
+                screen.UpdateSelectedStatus(SelectedScreen);
+        }
     }
 }

@@ -18,7 +18,7 @@
         <SolidColorBrush x:Key="DarkOliveBrush" Color="#40513B"/>
 
         <Style TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="{DynamicResource DarkOliveBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource DarkGreenBrush}"/>
             <Setter Property="Foreground" Value="#fff"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -151,7 +151,17 @@
                                 FontSize="20"
                                 HorizontalAlignment="Center"
                                 Command="{Binding DataContext.SelectDisplayCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
-                                CommandParameter="{Binding}"/>
+                                CommandParameter="{Binding}">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource DarkOliveBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                         <CheckBox
                             IsEnabled="False" 
                             IsChecked="{Binding IsConnected, Mode=OneWay}"
