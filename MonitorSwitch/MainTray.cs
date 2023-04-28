@@ -38,6 +38,7 @@ public class MainTray
             Icon = new Icon("tray.ico"),
             Visible = true,
             ContextMenuStrip = context,
+            Text = "MonitorSwitch", 
         };
         ni.Click += NiOnClick;
 
