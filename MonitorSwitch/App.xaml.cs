@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 namespace MonitorSwitch
@@ -13,5 +10,18 @@ namespace MonitorSwitch
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            SetWorkingDirectory();
+        }
+
+        private void SetWorkingDirectory()
+        {
+            var process = Process.GetCurrentProcess();
+            var directory = Path.GetDirectoryName(process.MainModule?.FileName)
+                            ?? throw new Exception("MainModule directory can not be null");
+
+            Directory.SetCurrentDirectory(directory);
+        }
     }
 }
