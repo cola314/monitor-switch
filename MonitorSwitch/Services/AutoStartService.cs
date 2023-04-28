@@ -7,12 +7,14 @@ public class AutoStartService
 {
     private const string ProgramName = "MonitorSwitch";
     private const string StartupRegPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+    
+    public const string StartupArgument = "/startup";
 
-    private readonly string _executablePath;
+    private readonly string _executeCommand;
 
     public AutoStartService()
     {
-        _executablePath = Application.ExecutablePath;
+        _executeCommand = $"{Application.ExecutablePath} {StartupArgument}";
     }
 
     private RegistryKey? StartupRegistry
@@ -22,7 +24,7 @@ public class AutoStartService
         => StartupRegistry?.GetValue(ProgramName) != null;
 
     public void Register() 
-        => StartupRegistry?.SetValue(ProgramName, _executablePath);
+        => StartupRegistry?.SetValue(ProgramName, _executeCommand);
 
     public void UnRegister() 
         => StartupRegistry?.DeleteValue(ProgramName);

@@ -1,12 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows;
-using System.Windows.Forms;
 using MonitorSwitch.Services;
-using MonitorSwitch.Utils;
-using MonitorSwitch.ViewModels;
-using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace MonitorSwitch
 {
@@ -20,7 +15,16 @@ namespace MonitorSwitch
         public MainWindow()
         {
             InitializeComponent();
+            HideWindowIfRunAsStartupProgram();
             _mainTray = new MainTray(ShowAction, CloseAction);
+        }
+
+        private void HideWindowIfRunAsStartupProgram()
+        {
+            if (Environment.GetCommandLineArgs() is [_, AutoStartService.StartupArgument])
+            {
+                this.Hide();
+            }
         }
 
         private void ShowAction()
