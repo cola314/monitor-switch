@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 
 namespace MonitorSwitch
@@ -12,7 +13,21 @@ namespace MonitorSwitch
     {
         public App()
         {
+            KillDuplicateProcess();
             SetWorkingDirectory();
+        }
+
+        private void KillDuplicateProcess()
+        {
+            var currentProcess = Process.GetCurrentProcess();
+            var duplicateProcesses = Process
+                .GetProcessesByName(currentProcess.ProcessName)
+                .Where(p => p.Id != currentProcess.Id);
+
+            foreach (var duplicateProcess in duplicateProcesses)
+            {
+                duplicateProcess.Kill();
+            }
         }
 
         private void SetWorkingDirectory()
