@@ -21,8 +21,8 @@ public class MainTray
     private NotifyIcon CreateNotifyIcon()
     {
         var context = new ContextMenuStrip();
-        var showItem = context.Items.Add("show", null);
-        var exitItem = context.Items.Add("exit", null);
+        var showItem = context.Items.Add("Show", null);
+        var exitItem = context.Items.Add("Exit", null);
 
         showItem.Click += (_, _) =>
         {
