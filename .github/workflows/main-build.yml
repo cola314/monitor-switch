@@ -1,16 +1,13 @@
-name: Build and Publish Artifact
-
+name: Main Build and Publish Artifact
 on:
   workflow_dispatch: {}
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-
 jobs:
   build:
     runs-on: windows-latest
-    
     steps:
     - name: Checkout
       uses: actions/checkout@v3
