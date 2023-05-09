@@ -165,16 +165,33 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
+                            <Button Content="Toggle"
+                                    Margin="0,0,10,0"
+                                    Padding="5,0"
+                                    FontSize="20"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding DataContext.ToggleDisplayCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+                                    CommandParameter="{Binding}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource DarkOliveBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                             <CheckBox
-                            Style="{StaticResource OnOffCheckBoxStyle}"
-                            IsEnabled="False" 
-                            IsChecked="{Binding IsConnected, Mode=OneWay}"
-                            Margin="0,0,5,0"
-                            HorizontalAlignment="Center"/>
+                                Style="{StaticResource OnOffCheckBoxStyle}"
+                                IsEnabled="False" 
+                                IsChecked="{Binding IsConnected, Mode=OneWay}"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Center"/>
                             <TextBlock 
-                            FontSize="20"
-                            HorizontalAlignment="Center"
-                            Text="{Binding DisplayDeviceName}"/>
+                                FontSize="20"
+                                HorizontalAlignment="Center"
+                                Text="{Binding DisplayDeviceName}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

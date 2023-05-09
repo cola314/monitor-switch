@@ -61,6 +61,23 @@ public class MainViewModel : BaseViewModel
         }
     });
 
+    public DelegateCommand ToggleDisplayCommand => new(o =>
+    {
+        if (o is ScreenViewModel viewModel)
+        {
+            if (viewModel.IsConnected)
+            {
+                _monitorService.Disconnect(viewModel.DeviceName);
+            }
+            else
+            {
+                _monitorService.Connect(viewModel.DeviceName);
+            }
+
+            RefreshScreens();
+        }
+    });
+
     private void RefreshScreens()
     {
         Screens.Clear();
