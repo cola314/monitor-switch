@@ -72,15 +72,23 @@ public class MainViewModel : BaseViewModel
 
 		foreach (var screen in displayDevices)
 		{
-            VisualScreens.Add(new VisualScreenItemViewModel(
-	            left: Scaling(screen.Detail.PosX, leftBias),
-	            top: Scaling(screen.Detail.PosY, topBias),
-	            width: Scaling(screen.Detail.Width, 0) - margin,
-	            height: Scaling(screen.Detail.Height, 0) - margin,
-	            deviceName: screen.DeviceName,
-	            displayName: new ScreenViewModel(screen).DisplayDeviceName,
-	            isConnected: new ScreenViewModel(screen).IsConnected,
-	            onClicked: OnVisualScreenClicked));
+			if (new ScreenViewModel(screen).IsConnected)
+			{
+				VisualScreens.Add(new VisualScreenItemViewModel(
+					left: Scaling(screen.Detail.PosX, leftBias),
+					top: Scaling(screen.Detail.PosY, topBias),
+					width: Scaling(screen.Detail.Width, 0) - margin,
+					height: Scaling(screen.Detail.Height, 0) - margin,
+					deviceName: screen.DeviceName,
+					displayName: new ScreenViewModel(screen).DisplayDeviceName,
+					onClicked: OnVisualScreenClicked));
+			}
+		}
+
+		var selectedVisualScreen = VisualScreens.FirstOrDefault(x => x.DeviceName == SelectedScreen?.DeviceName);
+		if (selectedVisualScreen != null)
+		{
+			selectedVisualScreen.IsSelected = true;
 		}
 	}
 

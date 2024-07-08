@@ -6,7 +6,6 @@ namespace MonitorSwitch.ViewModels;
 
 public class VisualScreenItemViewModel : BaseViewModel
 {
-	public Visibility Visibility { get; }
 	public int Left { get; }
 	public int Top { get; }
 	public int Width { get; }
@@ -23,7 +22,6 @@ public class VisualScreenItemViewModel : BaseViewModel
 		int height,
 		string deviceName,
 		string displayName,
-		bool isConnected,
 		Action<VisualScreenItemViewModel> onClicked)
 	{
 		Left = left;
@@ -32,7 +30,6 @@ public class VisualScreenItemViewModel : BaseViewModel
 		Height = height;
 		DeviceName = deviceName;
 		DisplayName = displayName;
-		Visibility = isConnected ? Visibility.Visible : Visibility.Collapsed;
 		_onClicked = onClicked;
 	}
 

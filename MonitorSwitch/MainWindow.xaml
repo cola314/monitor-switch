@@ -217,8 +217,7 @@
                     </ItemsControl.ItemContainerStyle>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Visibility="{Binding Visibility}" 
-                                    Width="{Binding Width}"
+                            <Border Width="{Binding Width}"
                                     Height="{Binding Height}"
                                     CornerRadius="5"
                                     Cursor="Hand">
