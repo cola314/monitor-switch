@@ -16,8 +16,8 @@ public class MainViewModel : BaseViewModel
 
     public MainViewModel()
     {
-        LoadFromSavedDisplay();
-        RefreshScreens();
+	    RefreshScreens();
+	    LoadFromSavedDisplay();
         _keyHookService.KeyPressed += KeyHookServiceOnKeyPressed;
     }
 
@@ -26,14 +26,7 @@ public class MainViewModel : BaseViewModel
         var lastSelectedDisplay = _displayRepository.GetLastSelectedDisplayName();
         if (lastSelectedDisplay == null) return;
 
-        SelectedScreen = new ScreenViewModel(
-            new DisplayDevice(
-	            DeviceName: lastSelectedDisplay, 
-	            DeviceString: string.Empty, 
-	            DeviceId: string.Empty, 
-	            DeviceKey: string.Empty,
-	            StateFlags: MonitorService.DisplayDeviceStateFlags.None,
-	            Detail: new DisplayDetailInfo(0, 0, 0, 0, 0, 0)));
+        SelectByDeviceName(lastSelectedDisplay);
     }
 
 	private void RefreshScreens()
@@ -84,11 +77,31 @@ public class MainViewModel : BaseViewModel
 	            top: Scaling(screen.Detail.PosY, topBias),
 	            width: Scaling(screen.Detail.Width, 0) - margin,
 	            height: Scaling(screen.Detail.Height, 0) - margin,
+	            deviceName: screen.DeviceName,
 	            displayName: new ScreenViewModel(screen).DisplayDeviceName,
-	            isConnected: new ScreenViewModel(screen).IsConnected));
+	            isConnected: new ScreenViewModel(screen).IsConnected,
+	            onClicked: OnVisualScreenClicked));
 		}
 	}
-    
+
+	private void OnVisualScreenClicked(VisualScreenItemViewModel visualScreenItem)
+	{
+		SelectByDeviceName(visualScreenItem.DeviceName);
+	}
+
+	private void SelectByDeviceName(string deviceName)
+	{
+		var screen = Screens.FirstOrDefault(x => x.DeviceName == deviceName);
+		if (screen != null)
+		{
+			SelectedScreen = screen;
+		}
+		else
+		{
+			RefreshScreens();
+		}
+	}
+
 	private void KeyHookServiceOnKeyPressed(KeyHookService.VKeys obj)
     {
         if (obj != KeyHookService.VKeys.VK_PAUSE) return;
@@ -151,6 +164,12 @@ public class MainViewModel : BaseViewModel
 
             foreach (var screen in Screens)
                 screen.UpdateSelectedStatus(SelectedScreen);
+
+            foreach (var screen in VisualScreens)
+            {
+                screen.IsSelected = value?.DeviceName == screen.DeviceName &&
+                                    (value?.IsSelected ?? false);
+            }
         }
     }
 

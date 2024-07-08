@@ -6,6 +6,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:MonitorSwitch"
         xmlns:viewModels="clr-namespace:MonitorSwitch.ViewModels"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="MonitorSwitch" Height="450" Width="800"
         Background="{DynamicResource LightBeigeBrush}">
@@ -220,12 +221,29 @@
                                     Width="{Binding Width}"
                                     Height="{Binding Height}"
                                     CornerRadius="5"
-                                    Background="{DynamicResource DarkGreenBrush}">
-                               <TextBlock Text="{Binding DisplayName}"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Center"
-                                          Foreground="{DynamicResource LightBeigeBrush}"
-                                          FontWeight="Bold"/> 
+                                    Cursor="Hand">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource DarkOliveBrush}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                                                <Setter Property="Background" Value="{DynamicResource LightGreenBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="MouseLeftButtonDown">
+                                        <b:InvokeCommandAction Command="{Binding OnClickedCommand}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                                <TextBlock Text="{Binding DisplayName}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource LightBeigeBrush}"
+                                           FontWeight="Bold"/> 
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
