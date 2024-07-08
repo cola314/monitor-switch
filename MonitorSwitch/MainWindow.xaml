@@ -127,75 +127,110 @@
                     Content="Refresh"
                     Style="{StaticResource RefreshButtonStyle}"/>
             </StackPanel>
-            <ListBox ItemsSource="{Binding Screens}"
-                  Background="{DynamicResource LightBeigeBrush}"
-                  BorderThickness="0">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                    <Border Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}">
-                                        <ContentPresenter/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModels:ScreenViewModel}">
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="Select"
-                                Margin="0,0,10,0"
-                                Padding="5,0"
-                                FontSize="20"
-                                HorizontalAlignment="Center"
-                                Command="{Binding DataContext.SelectDisplayCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
-                                CommandParameter="{Binding}">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                <Setter Property="Background" Value="{StaticResource DarkOliveBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                            <Button Content="Toggle"
-                                    Margin="0,0,10,0"
-                                    Padding="5,0"
+            <StackPanel Orientation="Horizontal">
+                <ListBox ItemsSource="{Binding Screens}"
+                         Background="{DynamicResource LightBeigeBrush}"
+                         BorderThickness="0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ContentPresenter/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:ScreenViewModel}">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Select"
+                                        Margin="0,0,10,0"
+                                        Padding="5,0"
+                                        FontSize="20"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding DataContext.SelectDisplayCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+                                        CommandParameter="{Binding}">
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource DarkOliveBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button Content="Toggle"
+                                        Margin="0,0,10,0"
+                                        Padding="5,0"
+                                        FontSize="20"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding DataContext.ToggleDisplayCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+                                        CommandParameter="{Binding}">
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource DarkOliveBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <CheckBox
+                                    Style="{StaticResource OnOffCheckBoxStyle}"
+                                    IsEnabled="False" 
+                                    IsChecked="{Binding IsConnected, Mode=OneWay}"
+                                    Margin="0,0,5,0"
+                                    HorizontalAlignment="Center"/>
+                                <TextBlock 
                                     FontSize="20"
                                     HorizontalAlignment="Center"
-                                    Command="{Binding DataContext.ToggleDisplayCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
-                                    CommandParameter="{Binding}">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                <Setter Property="Background" Value="{StaticResource DarkOliveBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                            <CheckBox
-                                Style="{StaticResource OnOffCheckBoxStyle}"
-                                IsEnabled="False" 
-                                IsChecked="{Binding IsConnected, Mode=OneWay}"
-                                Margin="0,0,5,0"
-                                HorizontalAlignment="Center"/>
-                            <TextBlock 
-                                FontSize="20"
-                                HorizontalAlignment="Center"
-                                Text="{Binding DisplayDeviceName}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                                    Text="{Binding DisplayDeviceName}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <ItemsControl ItemsSource="{Binding VisualScreens}"
+                              Margin="20"
+                              Height="100"
+                              Width="300"
+                              VerticalAlignment="Top">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style>
+                            <Setter Property="Canvas.Left" Value="{Binding Left}" />
+                            <Setter Property="Canvas.Top" Value="{Binding Top}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Visibility="{Binding Visibility}" 
+                                    Width="{Binding Width}"
+                                    Height="{Binding Height}"
+                                    CornerRadius="5"
+                                    Background="{DynamicResource DarkGreenBrush}">
+                               <TextBlock Text="{Binding DisplayName}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"
+                                          Foreground="{DynamicResource LightBeigeBrush}"
+                                          FontWeight="Bold"/> 
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+        </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock 
                 Text="Selected Monitor: "

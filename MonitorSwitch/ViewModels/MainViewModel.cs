@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using MonitorSwitch.Repositories;
 using MonitorSwitch.Services;
@@ -26,10 +27,69 @@ public class MainViewModel : BaseViewModel
         if (lastSelectedDisplay == null) return;
 
         SelectedScreen = new ScreenViewModel(
-            new DisplayDevice(lastSelectedDisplay, string.Empty, string.Empty, string.Empty, MonitorService.DisplayDeviceStateFlags.None));
+            new DisplayDevice(
+	            DeviceName: lastSelectedDisplay, 
+	            DeviceString: string.Empty, 
+	            DeviceId: string.Empty, 
+	            DeviceKey: string.Empty,
+	            StateFlags: MonitorService.DisplayDeviceStateFlags.None,
+	            Detail: new DisplayDetailInfo(0, 0, 0, 0, 0, 0)));
     }
 
-    private void KeyHookServiceOnKeyPressed(KeyHookService.VKeys obj)
+	private void RefreshScreens()
+	{
+		var displayDevices = _monitorService.GetDisplayDevices().ToList();
+		
+		Screens.Clear();
+		foreach (var screen in displayDevices)
+		{
+			Screens.Add(new ScreenViewModel(screen));
+		}
+
+		var selectedScreen = Screens.FirstOrDefault(x => x.DeviceName == SelectedScreen?.DeviceName);
+		if (selectedScreen != null)
+		{
+			SelectedScreen = selectedScreen;
+		}
+
+		VisualScreens.Clear();
+
+		int visualWidth = 300;
+        int visualHeight = 100;
+
+        int minLeft = displayDevices.Min(x => x.Detail.PosX);
+        int maxRight = displayDevices.Max(x => x.Detail.PosX + x.Detail.Width);
+        int width = maxRight - minLeft;
+
+        double widthRatio = (double) visualWidth / width;
+
+        int minBottom = displayDevices.Min(x => x.Detail.PosY);
+        int maxBottom = displayDevices.Max(x => x.Detail.PosY + x.Detail.Height);
+        int height = maxBottom - minBottom;
+
+        double heightRatio = (double) visualHeight / height;
+
+        double ratio = Math.Min(widthRatio, heightRatio);
+
+		int leftBias = displayDevices.Min(x => x.Detail.PosX);
+		int topBias = displayDevices.Min(x => x.Detail.PosY);
+		int margin = 3;
+
+		int Scaling(int x, int bias) => (int)((x - bias) * ratio);
+
+		foreach (var screen in displayDevices)
+		{
+            VisualScreens.Add(new VisualScreenItemViewModel(
+	            left: Scaling(screen.Detail.PosX, leftBias),
+	            top: Scaling(screen.Detail.PosY, topBias),
+	            width: Scaling(screen.Detail.Width, 0) - margin,
+	            height: Scaling(screen.Detail.Height, 0) - margin,
+	            displayName: new ScreenViewModel(screen).DisplayDeviceName,
+	            isConnected: new ScreenViewModel(screen).IsConnected));
+		}
+	}
+    
+	private void KeyHookServiceOnKeyPressed(KeyHookService.VKeys obj)
     {
         if (obj != KeyHookService.VKeys.VK_PAUSE) return;
 
@@ -78,22 +138,6 @@ public class MainViewModel : BaseViewModel
         }
     });
 
-    private void RefreshScreens()
-    {
-        Screens.Clear();
-
-        foreach (var screen in _monitorService.GetDisplayDevices())
-        {
-            Screens.Add(new ScreenViewModel(screen));
-        }
-
-        var selectedScreen = Screens.FirstOrDefault(x => x.DeviceName == SelectedScreen?.DeviceName);
-        if (selectedScreen != null)
-        {
-            SelectedScreen = selectedScreen;
-        }
-    }
-
     public ObservableCollection<ScreenViewModel> Screens { get; } = new();
 
     private ScreenViewModel? _selectedScreen;
@@ -109,6 +153,8 @@ public class MainViewModel : BaseViewModel
                 screen.UpdateSelectedStatus(SelectedScreen);
         }
     }
+
+    public ObservableCollection<VisualScreenItemViewModel> VisualScreens { get; } = new();
 
     public bool IsStartUpProgram
     {

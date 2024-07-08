@@ -9,8 +9,16 @@ public record DisplayDevice(
     string DeviceString,
     string DeviceId,
     string DeviceKey,
-    MonitorService.DisplayDeviceStateFlags StateFlags);
+    MonitorService.DisplayDeviceStateFlags StateFlags,
+    DisplayDetailInfo Detail);
 
+public record DisplayDetailInfo(
+	int BitsPerPel,
+	int Width,
+	int Height,
+	int Frequency,
+	int PosX,
+	int PosY);
 
 public class MonitorService
 {
@@ -20,19 +28,30 @@ public class MonitorService
         displayDevice.cb = Marshal.SizeOf(displayDevice);
         for (uint i = 0; NativeMethods.EnumDisplayDevices(null, i, ref displayDevice, 0); i++)
         {
-            yield return new DisplayDevice(
+	        var devMode = new DEVMODE();
+	        NativeMethods.EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, ref devMode);
+            var detail = new DisplayDetailInfo(
+	            BitsPerPel: devMode.dmBitsPerPel,
+	            Width: devMode.dmPelsWidth,
+	            Height: devMode.dmPelsHeight,
+	            Frequency: devMode.dmDisplayFrequency,
+	            PosX: devMode.dmPosition.x,
+	            PosY: devMode.dmPosition.y);
+
+			yield return new DisplayDevice(
                 DeviceName: displayDevice.DeviceName,
                 DeviceString: displayDevice.DeviceString,
                 DeviceId: displayDevice.DeviceID,
                 DeviceKey: displayDevice.DeviceKey,
-                StateFlags: displayDevice.StateFlags);
+                StateFlags: displayDevice.StateFlags,
+                Detail: detail);
         }
     }
 
     public void Disconnect(string deviceName)
     {
         var devMode = new DEVMODE();
-        NativeMethods.EnumDisplaySettings(deviceName, -1, ref devMode);
+        NativeMethods.EnumDisplaySettings(deviceName, ENUM_CURRENT_SETTINGS, ref devMode);
         devMode.dmPelsWidth = 0;
         devMode.dmPelsHeight = 0;
         POINTL pos = new POINTL();
@@ -47,14 +66,17 @@ public class MonitorService
     public void Connect(string deviceName)
     {
         var devMode = new DEVMODE();
-        NativeMethods.EnumDisplaySettings(deviceName, -2, ref devMode);
+        NativeMethods.EnumDisplaySettings(deviceName, ENUM_REGISTRY_SETTINGS, ref devMode);
 
         NativeMethods.ChangeDisplaySettingsEx(deviceName, ref devMode, IntPtr.Zero,
             ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY,
             IntPtr.Zero);
     }
 
-    [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Ansi)]
+    private const int ENUM_CURRENT_SETTINGS = -1;
+    private const int ENUM_REGISTRY_SETTINGS = -2;
+
+	[StructLayout(LayoutKind.Explicit, CharSet = CharSet.Ansi)]
     public struct DEVMODE
     {
         public const int CCHDEVICENAME = 32;
